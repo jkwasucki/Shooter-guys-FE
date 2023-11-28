@@ -1,3 +1,4 @@
+'use client'
 import React, { useEffect } from 'react';
 import * as Phaser from 'phaser';
 import Main from './Scenes/Main';
