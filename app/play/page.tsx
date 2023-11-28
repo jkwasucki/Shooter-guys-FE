@@ -6,9 +6,10 @@ import { useRouter } from 'next/navigation';
 
 export default function Home() {
   const router = useRouter()
-  const socket = getSocket()
+ 
   //If socket disconnected, forward to main menu
   useEffect(()=>{
+    const socket = getSocket()
     socket.on('namespace',(namespace)=>{
       if(namespace === '/'){
         router.push('/')
