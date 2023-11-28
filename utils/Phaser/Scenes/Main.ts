@@ -2,7 +2,7 @@ import { Socket, io } from "socket.io-client";
 import Enemy from "../Classes/Enemy";
 import Player from "../Classes/Player";
 import Weapon from "../Classes/Weapon";
-import { socket } from '../../../app/page'
+import { getSocket } from "@/lib/socket";
 export default class Main extends Phaser.Scene{
     body:any
     socket:Socket
@@ -32,7 +32,7 @@ export default class Main extends Phaser.Scene{
             weapons:[],
             enemies:[]
         }
-        this.socket = socket
+        this.socket = getSocket()
 
     }
 
