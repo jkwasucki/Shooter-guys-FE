@@ -6,7 +6,7 @@ import { io } from 'socket.io-client';
 
 
 // Establish socket global (initial) connection
-export let socket = io(`http://localhost:4000`, { transports: ['websocket'] });
+export let socket = io(`https://dasdd-9vx5.onrender.com`, { transports: ['websocket'] });
 
 export default function Play() {
         
@@ -28,7 +28,7 @@ export default function Play() {
             socket.on('roomFound',(roomId)=>{
                 socket.disconnect();
                 
-                socket = io(`http://localhost:4000/${roomId}`, { transports: ['websocket'] });
+                socket = io(`https://dasdd-9vx5.onrender.com/${roomId}`, { transports: ['websocket'] });
 
                 //Set roomId reference in storage for reconnecting purposes
                 sessionStorage.setItem("prevRoom",roomId)
@@ -46,7 +46,7 @@ export default function Play() {
                 socket.on('roomFound',(roomId)=>{
                     socket.disconnect();
                     
-                    socket = io(`http://localhost:4000/${roomId}`, { transports: ['websocket'] });
+                    socket = io(`https://dasdd-9vx5.onrender.com/${roomId}`, { transports: ['websocket'] });
 
                     //Set roomId reference in storage for reconnecting purposes
                     sessionStorage.setItem("prevRoom",roomId)
@@ -65,7 +65,7 @@ export default function Play() {
                     socket.disconnect();
 
                     // Reconnect to the namespace associated with the created game
-                    socket = io(`http://localhost:4000/${roomId}`, { transports: ['websocket'] });
+                    socket = io(`https://dasdd-9vx5.onrender.com/${roomId}`, { transports: ['websocket'] });
 
 
                     //Set roomId reference in storage for reconnecting purposes
