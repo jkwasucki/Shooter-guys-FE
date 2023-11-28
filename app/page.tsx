@@ -3,10 +3,9 @@ import { motion } from 'framer-motion'
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { io } from 'socket.io-client';
-
+import {initializeSocket,getSocket} from '@/lib/socket';
 
 // Establish socket global (initial) connection
-export let socket = io(`https://dasdd-9vx5.onrender.com`, { transports: ['websocket'] });
 
 export default function Play() {
         
@@ -23,12 +22,14 @@ export default function Play() {
             setPrevRoom(prevRoom)
         },[])
 
+        const socket = getSocket()
+
         function reconnect(roomId:string){
             socket.emit('joinGame', undefined, undefined,roomId);
             socket.on('roomFound',(roomId)=>{
                 socket.disconnect();
                 
-                socket = io(`https://dasdd-9vx5.onrender.com/${roomId}`, { transports: ['websocket'] });
+               initializeSocket(`https://dasdd-9vx5.onrender.com/${roomId}`);
 
                 //Set roomId reference in storage for reconnecting purposes
                 sessionStorage.setItem("prevRoom",roomId)
@@ -46,7 +47,7 @@ export default function Play() {
                 socket.on('roomFound',(roomId)=>{
                     socket.disconnect();
                     
-                    socket = io(`https://dasdd-9vx5.onrender.com/${roomId}`, { transports: ['websocket'] });
+                    initializeSocket(`https://dasdd-9vx5.onrender.com/${roomId}`);
 
                     //Set roomId reference in storage for reconnecting purposes
                     sessionStorage.setItem("prevRoom",roomId)
@@ -65,7 +66,7 @@ export default function Play() {
                     socket.disconnect();
 
                     // Reconnect to the namespace associated with the created game
-                    socket = io(`https://dasdd-9vx5.onrender.com/${roomId}`, { transports: ['websocket'] });
+                    initializeSocket(`https://dasdd-9vx5.onrender.com/${roomId}`);
 
 
                     //Set roomId reference in storage for reconnecting purposes

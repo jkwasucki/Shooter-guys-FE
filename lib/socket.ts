@@ -1,5 +1,12 @@
-import { io } from 'socket.io-client';
+import { io, Socket } from 'socket.io-client';
 
-const socket = io('http://localhost:4000', { transports: ['websocket'] });
+let socket:Socket = io(`https://dasdd-9vx5.onrender.com`, { transports: ['websocket'] });
 
-export default socket;
+export function getSocket(){
+    return socket
+}
+
+export function initializeSocket(url:string){
+    socket = io(url,{transports:['websocket']})
+}
+
