@@ -239,47 +239,47 @@ export default class Main extends Phaser.Scene{
                 if(children instanceof Player){
                         if(cursors.playerId === children.playerId){
                                
-                                // Firing a weapon
-                                if(cursors.cursors.space){
-                                    if(!children.firelock){
-                                        children.firelock = true
-                                        children.weapon.muzzle.setAlpha(1,1,1,1)
-                                        children.weapon.fire(scene)
-                                        setTimeout(()=>{
-                                            children.weapon.muzzle.setAlpha(0,0,0,0)
-                                        },50)
+                            // Firing a weapon
+                            if(cursors.cursors.space){
+                                if(!children.firelock){
+                                    children.firelock = true
+                                    children.weapon.muzzle.setAlpha(1,1,1,1)
+                                    children.weapon.fire(scene)
+                                    setTimeout(()=>{
+                                        children.weapon.muzzle.setAlpha(0,0,0,0)
+                                    },50)
+                                
+                                    setTimeout(()=>{
+                                        children.firelock = false  
                                     
-                                        setTimeout(()=>{
-                                            children.firelock = false  
-                                        
-                                        },children.weapon.fireSpeed)
-                                    }
-                                    return
+                                    },children.weapon.fireSpeed)
                                 }
-                            
-                                if(!cursors.cursors.up && !cursors.cursors.down && !cursors.cursors.left && !cursors.cursors.right){
-                                    children.play('idle',true)
-                                    return
-                                }else if(cursors.cursors.left) {
-                                    children.setFlipX(true);
-                                    children.play('walk', true);
-                                    return
-                                }else if (cursors.cursors.right) {
-                                    children.setFlipX(false);
-                                    children.play('walk', true);
-                                    return
-                                }else if(cursors.cursors.up || cursors.cursors.down){
-                                    children.play('walk', true);
-                                }
-                                if(cursors.facing === 'left'){
-                                    children.setFlipX(true)
-                                    return
-                                }
-                                if(cursors.facing === 'right'){
-                                    children.setFlipX(false)
-                                    return
-                                }
+                                return
                             }
+                        
+                            if(!cursors.cursors.up && !cursors.cursors.down && !cursors.cursors.left && !cursors.cursors.right){
+                                children.play('idle',true)
+                                return
+                            }else if(cursors.cursors.left) {
+                                children.setFlipX(true);
+                                children.play('walk', true);
+                                return
+                            }else if (cursors.cursors.right) {
+                                children.setFlipX(false);
+                                children.play('walk', true);
+                                return
+                            }else if(cursors.cursors.up || cursors.cursors.down){
+                                children.play('walk', true);
+                            }
+                            if(cursors.facing === 'left'){
+                                children.setFlipX(true)
+                                return
+                            }
+                            if(cursors.facing === 'right'){
+                                children.setFlipX(false)
+                                return
+                            }
+                        }
                             
                             
                     return true
@@ -423,6 +423,17 @@ export default class Main extends Phaser.Scene{
                                 minDistance = distance;
                                 nearestPlayer = player;
                             }
+                            this.physics.world.overlap(
+                                enemy,
+                                player.weapon.bullets,
+                                (enemyObject, bulletObject) => {
+                                    if (enemyObject instanceof Enemy && bulletObject instanceof Phaser.GameObjects.GameObject) {
+                                        enemyObject.hit(enemyObject, bulletObject);
+                                    }
+                                },
+                                undefined,
+                                this
+                            );
                         }
         
                         return true; // Continue iterating

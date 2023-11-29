@@ -88,16 +88,6 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite{
     }
     
     move(player:Player,scene:Phaser.Scene){
-
-        //Track collision between enemy and bullet
-        scene.physics.world.overlap(
-            this,
-            player!.weapon.bullets,
-            this.hit, //Run hit when collision is detected
-            undefined,
-            this
-        );
-
         // Move enemy
         if (this.alive && !this.hitEnemy) {
             const distanceToPlayer = Phaser.Math.Distance.Between(this.x, this.y, player.x, player.y);

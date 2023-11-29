@@ -3,9 +3,9 @@ import { motion } from 'framer-motion'
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { io } from 'socket.io-client';
-import {initializeSocket,getSocket} from '@/lib/socket';
+import { getSocket, initializeSocket } from '@/lib/socket';
 
-// Establish socket global (initial) connection
+
 
 export default function Play() {
         
@@ -17,12 +17,12 @@ export default function Play() {
             passcode:""
         })
 
+        const socket = getSocket()
+
         useEffect(()=>{
             let prevRoom = sessionStorage.getItem('prevRoom')
             setPrevRoom(prevRoom)
         },[])
-
-        const socket = getSocket()
 
         function reconnect(roomId:string){
             socket.emit('joinGame', undefined, undefined,roomId);

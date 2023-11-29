@@ -1,4 +1,3 @@
-import dynamic from 'next/dynamic';
 import React, { useEffect } from 'react';
 import Phaser from 'phaser'; // Add this line to import Phaser
 import Main from './Scenes/Main';

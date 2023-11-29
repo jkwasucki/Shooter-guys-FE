@@ -10,3 +10,4 @@ export function initializeSocket(url:string){
     socket = io(url,{transports:['websocket']})
 }
 
+// https://shooter-guys-backend-final.onrender.com
