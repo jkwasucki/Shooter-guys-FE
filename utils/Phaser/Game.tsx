@@ -1,14 +1,20 @@
 'use client'
+import dynamic from 'next/dynamic';
 import React, { useEffect } from 'react';
 import * as Phaser from 'phaser';
 import Main from './Scenes/Main';
 
-const PhaserGame = () => {
+export default function PhaserGame(){
+
+  
 
   useEffect(() => {
     let game:Phaser.Game;
+    
+    const loadPhaser = async () => {
+      const phaserModule = await import('phaser');
+      const { default: Phaser } = phaserModule;
 
-    if (typeof window !== 'undefined') {
       const config = {
         type: Phaser.AUTO,
         width: window.innerWidth,
@@ -23,18 +29,16 @@ const PhaserGame = () => {
         scene: [Main],
       };
 
-      game = new Phaser.Game(config);
+      const game = new Phaser.Game(config);
       game.canvas.style.cursor = 'url("/crosshair.png"), auto';
-    }
-
-    return () => {
-      if (game) {
-        game.destroy(true);
-      }
     };
+
+    if (typeof window !== 'undefined') {
+      loadPhaser();
+    }
   }, []);
 
   return <div id="phaser-container"></div>;
 };
 
-export default PhaserGame;
+
