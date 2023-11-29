@@ -29,7 +29,7 @@ export default function Play() {
             socket.on('roomFound',(roomId)=>{
                 socket.disconnect();
                 
-               initializeSocket(`https://dasdd-9vx5.onrender.com/${roomId}`);
+               initializeSocket(`https://shooter-guys-backend-final.onrender.com/${roomId}`);
 
                 //Set roomId reference in storage for reconnecting purposes
                 sessionStorage.setItem("prevRoom",roomId)
@@ -47,7 +47,7 @@ export default function Play() {
                 socket.on('roomFound',(roomId)=>{
                     socket.disconnect();
                     
-                    initializeSocket(`https://dasdd-9vx5.onrender.com/${roomId}`);
+                    initializeSocket(`https://shooter-guys-backend-final.onrender.com/${roomId}`);
 
                     //Set roomId reference in storage for reconnecting purposes
                     sessionStorage.setItem("prevRoom",roomId)
@@ -66,7 +66,7 @@ export default function Play() {
                     socket.disconnect();
 
                     // Reconnect to the namespace associated with the created game
-                    initializeSocket(`https://dasdd-9vx5.onrender.com/${roomId}`);
+                    initializeSocket(`https://shooter-guys-backend-final.onrender.com/${roomId}`);
 
 
                     //Set roomId reference in storage for reconnecting purposes

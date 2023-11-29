@@ -1,6 +1,6 @@
 import { io, Socket } from 'socket.io-client';
 
-let socket:Socket = io(`https://dasdd-9vx5.onrender.com`, { transports: ['websocket'] });
+let socket:Socket = io(`https://shooter-guys-backend-final.onrender.com`, { transports: ['websocket'] });
 
 export function getSocket(){
     return socket
