@@ -237,40 +237,27 @@ export default class Main extends Phaser.Scene{
         this.socket.on('updatedCursors',(cursors)=>{
             this.players.getChildren().forEach(function(children){
                 if(children instanceof Player){
-                        if(cursors.playerId === children.playerId){
-                               
-                            // Firing a weapon
-                            if(cursors.cursors.space){
-                                if(!children.firelock){
-                                    children.firelock = true
-                                    children.weapon.muzzle.setAlpha(1,1,1,1)
-                                    children.weapon.fire(scene)
-                                    setTimeout(()=>{
-                                        children.weapon.muzzle.setAlpha(0,0,0,0)
-                                    },50)
+                    if(cursors.playerId === children.playerId){
+                        // Firing a weapon
+                        if(cursors.cursors.space){
+                            if(!children.firelock){
+                                children.firelock = true
+                                children.weapon.muzzle.setAlpha(1,1,1,1)
+                                children.weapon.fire(scene)
+                                setTimeout(()=>{
+                                    children.weapon.muzzle.setAlpha(0,0,0,0)
+                                },50)
+                            
+                                setTimeout(()=>{
+                                    children.firelock = false  
                                 
-                                    setTimeout(()=>{
-                                        children.firelock = false  
-                                    
-                                    },children.weapon.fireSpeed)
-                                }
-                                return
+                                },children.weapon.fireSpeed)
                             }
-                        
-                            if(!cursors.cursors.up && !cursors.cursors.down && !cursors.cursors.left && !cursors.cursors.right){
-                                children.play('idle',true)
-                                return
-                            }else if(cursors.cursors.left) {
-                                children.setFlipX(true);
-                                children.play('walk', true);
-                                return
-                            }else if (cursors.cursors.right) {
-                                children.setFlipX(false);
-                                children.play('walk', true);
-                                return
-                            }else if(cursors.cursors.up || cursors.cursors.down){
-                                children.play('walk', true);
-                            }
+                            return
+                        }
+                    
+                        if(!cursors.cursors.up && !cursors.cursors.down && !cursors.cursors.left && !cursors.cursors.right){
+                            children.play('idle',true)
                             if(cursors.facing === 'left'){
                                 children.setFlipX(true)
                                 return
@@ -279,7 +266,20 @@ export default class Main extends Phaser.Scene{
                                 children.setFlipX(false)
                                 return
                             }
+                            return
+                        }else if(cursors.cursors.left) {
+                            children.setFlipX(true);
+                            children.play('walk', true);
+                            return
+                        }else if (cursors.cursors.right) {
+                            children.setFlipX(false);
+                            children.play('walk', true);
+                            return
+                        }else if(cursors.cursors.up || cursors.cursors.down){
+                            children.play('walk', true);
                         }
+                        
+                    }
                             
                             
                     return true
