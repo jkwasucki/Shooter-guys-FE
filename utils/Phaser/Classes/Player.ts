@@ -1,7 +1,6 @@
 import { Socket, io } from "socket.io-client";
 import Main from "../Scenes/Main";
 import Weapon from "./Weapon";
-import Phaser from "phaser";
 
 export default class Player extends Phaser.GameObjects.Sprite {
     weapon

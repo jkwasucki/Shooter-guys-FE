@@ -1,9 +1,9 @@
+'use client'
 import { Socket, io } from "socket.io-client";
 import Enemy from "../Classes/Enemy";
 import Player from "../Classes/Player";
 import Weapon from "../Classes/Weapon";
 import { getSocket } from "@/lib/socket";
-import Phaser from "phaser";
 
 export default class Main extends Phaser.Scene{
     body:any
