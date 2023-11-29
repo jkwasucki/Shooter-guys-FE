@@ -202,32 +202,31 @@ export default class Player extends Phaser.GameObjects.Sprite {
     }
     respawn(){
       
- // this.socket?.emit('playerAlived',this.playerId)
- this.dieInitiated = false
-        
- this.alive = true
- if (this.respawnText) {
-     this.respawnText.destroy();
- }
- if (this.deathText) {
-     this.deathText.destroy();
- }
- let closeToSpawn = Phaser.Math.Distance.Between(
-     2048, 2048, 2500, 2500
- );
+        this.dieInitiated = false
+                
+        this.alive = true
+        if (this.respawnText) {
+            this.respawnText.destroy();
+        }
+        if (this.deathText) {
+            this.deathText.destroy();
+        }
+        let closeToSpawn = Phaser.Math.Distance.Between(
+            2048, 2048, 2500, 2500
+        );
 
- if(closeToSpawn){
-     this.x = this.x + 1000
-     this.y = this.y + 1000
-     this.shadow.x = this.x + 1000
-     this.shadow.y = this.y + 1000
- }else{
-     this.x = 2048
-     this.y = 2048
-     this.shadow.x = 2048
-     this.shadow.y = 2048
- }       
-      
+        if(closeToSpawn){
+            this.x = this.x + 1000
+            this.y = this.y + 1000
+            this.shadow.x = this.x + 1000
+            this.shadow.y = this.y + 1000
+        }else{
+            this.x = 2048
+            this.y = 2048
+            this.shadow.x = 2048
+            this.shadow.y = 2048
+        }       
+            
        
     }
     pickupGun(player: any, weapon: any) {

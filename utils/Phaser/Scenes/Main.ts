@@ -337,37 +337,9 @@ export default class Main extends Phaser.Scene{
         })
 
        
-        // this.socket.on('playerRespawned',(id)=>{
-        //     this.players.getChildren().forEach(function(children){
-        //         if(children instanceof Player){
-        //             if(children.playerId === id){
-        //                 children.respawn()
-        //             }
-        //         }
-        //         return true
-        //     })
-        // })
-       
     }
 
     update() {
-
-        // this.players.getChildren().forEach(function(children){
-        //     if(children instanceof Player){
-        //         if(!children.alive){
-        //             console.log("HAHAHAH")
-        //             children.play('death')
-        //             if(children.cursors.space.isDown){
-        //                 children.respawn()
-        //             }
-        //         }else{
-        //             return
-        //         }
-                   
-                 
-              
-        //     }
-        // }) 
 
         //Manage depth
         this.enemies.children.iterate((enemy:Enemy)=>{
