@@ -1,4 +1,4 @@
-
+import Phaser from 'phaser'
 import { Socket } from "socket.io-client";
 import Player from "./Player";
 export default class Enemy extends Phaser.Physics.Arcade.Sprite{
