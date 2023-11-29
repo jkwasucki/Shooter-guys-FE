@@ -112,12 +112,12 @@ export default class Player extends Phaser.GameObjects.Sprite {
             }
             
             if(this.cursors.left.isDown) {
-                this.x -= 5
+                this.x -= 1
             
                 this.setFlipX(true);
                 this.play('walk', true);
             }else if (this.cursors.right.isDown) {
-                this.x += 5
+                this.x += 1
                 
                 this.setFlipX(false);
                 this.play('walk', true);
@@ -125,8 +125,8 @@ export default class Player extends Phaser.GameObjects.Sprite {
             if(this.cursors.up.isDown || this.cursors.down.isDown){
                 this.play('walk', true);
                 if(this.cursors.up.isDown){
-                    this.y = this.y -= 5
-                }else this.y = this.y += 5
+                    this.y = this.y -= 1
+                }else this.y = this.y += 1
             }
             if(this.cursors.space.isDown){
                 if(!this.firelock){
