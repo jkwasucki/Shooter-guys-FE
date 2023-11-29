@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import Phaser from 'phaser'; // Add this line to import Phaser
+import * as Phaser from 'phaser'; 
 import Main from './Scenes/Main';
 export default function PhaserGame() {
   useEffect(() => {
@@ -22,16 +22,20 @@ export default function PhaserGame() {
 
       game = new Phaser.Game(config);
       game.canvas.style.cursor = 'url("/crosshair.png"), auto';
+    };
 
-      return () => {
-        if (game) {
-          game.destroy();
-        }
-      };
+    const unloadPhaser = () => {
+      if (game) {
+        game.destroy(true); // true indicates a "hard" destruction, clearing all resources
+      }
     };
 
     if (typeof window !== 'undefined') {
       loadPhaser();
+
+      return () => {
+        unloadPhaser();
+      };
     }
   }, []);
 

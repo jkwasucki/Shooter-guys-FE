@@ -77,7 +77,7 @@ export default function Play() {
         }
 
     return (
-        <div className='w-screen h-screen flex items-center justify-center bg-[#50303c] select-none'>
+        <div className='w-screen h-screen flex items-center justify-center bg-[#50303c] select-none overflow-y-hidden'>
             {tab === 'main' && 
                 <>
                     <img src='/menu_box.png' className='absolute w-[300px] h-[400px]'/>
