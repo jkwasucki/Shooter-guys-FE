@@ -76,29 +76,114 @@ export default class Player extends Phaser.GameObjects.Sprite {
             repeat: 1
         });
 
+         //Sync shadow,depth and weapon movement with player
+         this.socket!.on('playerMoved',(movingPlayer)=>{
+    
+            if(movingPlayer.playerId === this.playerId){
+                this.alive = movingPlayer.alive
+                this.setPosition(movingPlayer.x,movingPlayer.y)
+                this.weapon.move(scene,movingPlayer.x,movingPlayer.y + 15)
+                this.weapon.updateDepth(this)
+                this.shadow.setPosition(movingPlayer.x,movingPlayer.y)
+                
+
+                if(!this.alive){
+                    this.die()
+                }
+            }  
+        })
+
+        this.socket!.on('weaponRotated',(player)=>{
+            if(player.playerId === this.playerId){
+                this.weapon.angle = player.weapon.angle
+                
+            }
+        })
+
+        this.socket!.on('updatedCursors',(cursors)=>{
+            if(cursors.playerId === this.playerId){
+                
+                if(!this.alive && cursors.cursors.space){
+                    this.respawn()
+                }
+
+                if(this.alive){
+                    this.facing = cursors.facing
+
+                    if(
+                        !cursors.cursors.down
+                        && !cursors.cursors.up
+                        && !cursors.cursors.left
+                        && !cursors.cursors.right
+                    ) {
+                        this.play('idle',true)
+                    }
         
+                    if(this.weapon.facing === 'left'){
+                        this.setFlipX(true)
+                        this.facing = 'left'
+                    }else{
+                        this.setFlipX(false)
+                        this.facing = 'right'
+                    }
+                    
+                    if(cursors.cursors.left) {
+                        this.setFlipX(true);
+                        this.play('walk', true);
+                    }else if (cursors.cursors.right) {
+                        this.setFlipX(false);
+                        this.play('walk', true);
+                    }
+                    if(cursors.cursors.up || cursors.cursors.down){
+                        this.play('walk', true);
+                    }
+                    if(cursors.cursors.space){
+                        if(!this.firelock){
+                            this.firelock = true
+                            this.weapon.muzzle.setAlpha(1,1,1,1)
+                            
+                            scene.cameras.main.shake(200, 0.003);
+                            
+                            this.weapon.fire(scene)
+                            setTimeout(()=>{
+                                this.weapon.muzzle.setAlpha(0,0,0,0)
+                            },50)
+                        
+                            setTimeout(()=>{
+                            this.firelock = false  
+                            
+                            },this.weapon.fireSpeed)
+                        }
+                    }
+                }
+               
+                
+            }
+        })
+
         //Initialize starting weapon 
         this.weapon = new Weapon(scene,"weapon_pistol",this.x,this.y,playerId,socket!,undefined,this)
-     
-        
     }
+
     move(scene:Phaser.Scene,weapons:Phaser.Physics.Arcade.Group){
-        if(this.alive && this.playerId === this.socket!.id){
-            // FOR SOCKET
-            this.cursorsState.up = this.cursors.up.isDown ? true : false
-            this.cursorsState.down = this.cursors.down.isDown ? true : false
-            this.cursorsState.left = this.cursors.left.isDown ? true : false
-            this.cursorsState.right = this.cursors.right.isDown ? true : false
-            this.cursorsState.space = this.cursors.space.isDown ? true : false
+          // FOR SOCKET
+          this.cursorsState.up = this.cursors.up.isDown ? true : false
+          this.cursorsState.down = this.cursors.down.isDown ? true : false
+          this.cursorsState.left = this.cursors.left.isDown ? true : false
+          this.cursorsState.right = this.cursors.right.isDown ? true : false
+          this.cursorsState.space = this.cursors.space.isDown ? true : false
+
+        if(this.alive){
+          
 
             //Track collision between player and weapon laying on the ground
             scene.physics.world.overlap(this, weapons, this.pickupGun, undefined, this);
 
             if(
-                !this.cursors.down.isDown 
-                && !this.cursors.up.isDown 
-                && !this.cursors.left.isDown 
-                && !this.cursors.right.isDown 
+                !this.cursorsState.down
+                && !this.cursorsState.up
+                && !this.cursorsState.left
+                && !this.cursorsState.right
             ) {
                 this.play('idle',true)
             }
@@ -111,24 +196,24 @@ export default class Player extends Phaser.GameObjects.Sprite {
                 this.facing = 'right'
             }
             
-            if(this.cursors.left.isDown) {
+            if(this.cursorsState.left) {
                 this.x -= 3
             
                 this.setFlipX(true);
                 this.play('walk', true);
-            }else if (this.cursors.right.isDown) {
+            }else if (this.cursorsState.right) {
                 this.x += 3
                 
                 this.setFlipX(false);
                 this.play('walk', true);
             }
-            if(this.cursors.up.isDown || this.cursors.down.isDown){
+            if(this.cursorsState.up || this.cursorsState.down){
                 this.play('walk', true);
                 if(this.cursors.up.isDown){
                     this.y = this.y -= 3
                 }else this.y = this.y += 3
             }
-            if(this.cursors.space.isDown){
+            if(this.cursorsState.space){
                 if(!this.firelock){
                     this.firelock = true
                     this.weapon.muzzle.setAlpha(1,1,1,1)
@@ -146,31 +231,38 @@ export default class Player extends Phaser.GameObjects.Sprite {
                     },this.weapon.fireSpeed)
                 }
             }
-            
-            //Sync shadow,depth and weapon movement with player
+        
             this.weapon.move(scene,this.x,this.y + 15)
-            this.shadow.setPosition(this.x, this.y);
             this.weapon.updateDepth(this)
+            this.shadow.setPosition(this.x,this.y)
             
-            //Weapon angle and movement
-            this.socket?.emit('updateCursors',this.cursorsState,this.facing)
             if(this.weapon.angle){
                 this.socket?.emit('weaponRotation',this.weapon.angle)
             }
         }else{
+            this.die()
             if(this.cursors.space.isDown){
                 this.respawn()
             }
         }
-           
+
+        //Weapon angle and movement
+        this.socket?.emit('updateCursors',this.cursorsState,this.facing)
+
+            
+        this.socket!.emit('playerMovement',{
+            x:this.x,
+            y:this.y,
+            cursors:this.cursorsState,
+            alive:this.alive
+        })
+
     }
     die(){
-        if(!this.dieInitiated){
-           this.alive = false
-           
+        if(!this.dieInitiated){           
             this.dieInitiated = true
           
-          
+            this.play('death')
             if(this.socket!.id === this.playerId){
                 this.deathText = this.scene.add.text(
                     window.innerWidth / 2,
@@ -205,6 +297,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
         this.dieInitiated = false
                 
         this.alive = true
+
         if (this.respawnText) {
             this.respawnText.destroy();
         }
@@ -226,9 +319,8 @@ export default class Player extends Phaser.GameObjects.Sprite {
             this.shadow.x = 2048
             this.shadow.y = 2048
         }       
-            
-       
     }
+
     pickupGun(player: any, weapon: any) {
         if (weapon instanceof Weapon) {
             this.weapon.destroy();

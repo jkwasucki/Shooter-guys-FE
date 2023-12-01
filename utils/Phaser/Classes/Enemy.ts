@@ -107,8 +107,8 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite{
             } else {
                 // Stop the enemy if it's close to the player
                 this.setVelocity(0);
-                this.play('attack',true)       
-                player.die()    
+                this.play('attack',true)   
+                player.alive = false 
             }
 
             this.socket?.emit('enemyMoving',{x:this.x,y:this.y,id:this.id})

@@ -187,20 +187,6 @@ export default class Main extends Phaser.Scene{
         })
        
 
-        // Responsible for socket's dimensional movement
-        this.socket.on('playerMoved',(movingPlayer)=>{
-            this.players.getChildren().forEach(function(children){
-                if(children instanceof Player){
-                    if(movingPlayer.playerId === children.playerId){
-                        children.setPosition(movingPlayer.x,movingPlayer.y)
-                        children.weapon.move(scene,movingPlayer.x,movingPlayer.y + 15)
-                        children.shadow.setPosition(movingPlayer.x,movingPlayer.y)
-                    }
-                }
-                return true
-            })
-        })
-
         this.socket.on('pickupWeapon',(player)=>{
             this.players.getChildren().forEach((children) => {
                 if(children instanceof Player){
@@ -220,75 +206,6 @@ export default class Main extends Phaser.Scene{
             })
             return true
         })
-
-        this.socket.on('weaponRotated',(player)=>{
-            this.players.getChildren().forEach(function(children){
-                if(children instanceof Player){
-                    if(player.playerId === children.playerId){
-                    
-                        children.weapon.angle = player.weapon.angle
-                    }
-                }
-                return true
-            })
-        })
-        
-        // Responsible for socket's movement animation
-        this.socket.on('updatedCursors',(cursors)=>{
-            this.players.getChildren().forEach(function(children){
-                if(children instanceof Player){
-                    if(cursors.playerId === children.playerId){
-                        // Firing a weapon
-                        if(cursors.cursors.space){
-                            if(!children.firelock){
-                                children.firelock = true
-                                children.weapon.muzzle.setAlpha(1,1,1,1)
-                                children.weapon.fire(scene)
-                                setTimeout(()=>{
-                                    children.weapon.muzzle.setAlpha(0,0,0,0)
-                                },50)
-                            
-                                setTimeout(()=>{
-                                    children.firelock = false  
-                                
-                                },children.weapon.fireSpeed)
-                            }
-                            return
-                        }
-                    
-                        if(!cursors.cursors.up && !cursors.cursors.down && !cursors.cursors.left && !cursors.cursors.right){
-                            children.play('idle',true)
-                            if(cursors.facing === 'left'){
-                                children.setFlipX(true)
-                                return
-                            }
-                            if(cursors.facing === 'right'){
-                                children.setFlipX(false)
-                                return
-                            }
-                            return
-                        }else if(cursors.cursors.left) {
-                            children.setFlipX(true);
-                            children.play('walk', true);
-                            return
-                        }else if (cursors.cursors.right) {
-                            children.setFlipX(false);
-                            children.play('walk', true);
-                            return
-                        }else if(cursors.cursors.up || cursors.cursors.down){
-                            children.play('walk', true);
-                        }
-                        
-                    }
-                            
-                            
-                    return true
-                }
-                
-            })
-        })
-       
-        
 
         this.socket.on('spawnEnemy',(enemy)=>{
             const newEnemy = new Enemy(this,enemy.x,enemy.y,enemy.id,this.socket!);
@@ -361,23 +278,16 @@ export default class Main extends Phaser.Scene{
             return true
         })
 
-        
-
         // Allow players movement
         this.players?.children.iterate((player: Phaser.GameObjects.GameObject) => {
             if (player && player instanceof Player) {
                 if(player.playerId === this.socket?.id){
                     player.move(this, this.weapons!)
-                    this.socket.emit('playerMovement',{
-                        x:player.x,
-                        y:player.y,
-                        cursors:player.cursorsState
-                    })
                 }
-             
             }
             return true; // Continue iterating
         }); 
+
         //Move Enemies
         if (this.enemies) {
             this.enemies.children.iterate((enemy: Enemy) => {

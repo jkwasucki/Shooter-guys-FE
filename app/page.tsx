@@ -1,17 +1,19 @@
 'use client'
 import { motion } from 'framer-motion'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { io } from 'socket.io-client';
 import { getSocket, initializeSocket } from '@/lib/socket';
 
 
 
 export default function Play() {
         
+        const refName = useRef<HTMLInputElement>(null)
+        const refPass = useRef<HTMLInputElement>(null)
         const router = useRouter()
         const [tab,setTab] = useState("main")
         const [prevRoom,setPrevRoom] = useState<string | null>('')
+        const [info,setInfo] = useState('')
         const [credentials,setCredentials] = useState({
             name:"",
             passcode:""
@@ -53,7 +55,16 @@ export default function Play() {
                     sessionStorage.setItem("prevRoom",roomId)
                     router.push('/play');
                 })
+                socket.on('roomNotFound',()=>{
+                    setInfo('notFound')
+                })
                 
+            }
+            if(credentials.passcode.length === 0){
+                refPass.current!.style.backgroundColor = '#FF5C5C'
+            }
+            if(credentials.name.length === 0){
+                refName.current!.style.backgroundColor = '#FF5C5C'
             }
         }
     
@@ -75,6 +86,12 @@ export default function Play() {
                 });
             }
         }
+
+        useEffect(()=>{
+            setTimeout(()=>{
+                setInfo('')
+            },1000)
+        },[info])
 
     return (
         <div className='w-screen h-screen flex items-center justify-center bg-[#50303c] select-none overflow-y-hidden'>
@@ -135,9 +152,12 @@ export default function Play() {
                         className='absolute z-9 w-[300px] h-[400px]'
                     />
                     <div className='absolute z-[999] w-[300px] h-[400px] flex flex-col items-center justify-start mt-12'>
-                        <p className='relative top-[-40px] left-0 flex justify-center inset-0 text-4xl text-[#eec39a] font-bold z-1'> 
-                            - CREATE GAME - 
-                        </p>
+                        <div className='relative flex flex-col items-center top-[-40px]'>
+                            <p className='left-0 flex justify-center inset-0 text-4xl text-[#eec39a] font-bold z-1'>
+                                - CREATE GAME - 
+                            </p>
+                            <p onClick={()=>setTab('main')} className='text-slate-300 font-bold hover:text-white cursor-pointer'>Back</p>
+                        </div>
 
                         <div className='flex flex-col items-center'>
                             <p className='text-[#eec39a] font-bold'>
@@ -175,15 +195,20 @@ export default function Play() {
                         className='absolute z-9 w-[300px] h-[400px]'
                     />
                     <div className='absolute z-[999] w-[300px] h-[400px] flex flex-col items-center justify-start mt-12'>
-                        <p className='relative top-[-40px] left-0 flex justify-center inset-0 text-4xl text-[#eec39a] font-bold z-1'>
-                             - JOIN GAME - 
-                        </p>
+                        <div className='relative flex flex-col items-center top-[-40px]'>
+                            <p className='left-0 flex justify-center inset-0 text-4xl text-[#eec39a] font-bold z-1'>
+                                - JOIN GAME - 
+                            </p>
+                            <p onClick={()=>setTab('main')} className='text-slate-300 font-bold hover:text-white cursor-pointer'>Back</p>
+                        </div>
+                        {info === 'notFound' && <p className='absolute top-6 text-red-300 font-semibold'>Room not found</p>}
                         <div className='flex flex-col items-center'>
                             <p className='text-[#eec39a] font-bold'>
                                 ENTER 
                                 <span className='text-2xl'>ROOM NAME</span>
                             </p>
                             <input 
+                                ref={refName}
                                 onChange={(e)=>setCredentials((prev)=>({...prev,name:e.target.value}))} 
                                 className='p-2 text-xl font-bold hover:bg-[#eec39a] bg-[#d9a066] w-full h-[50px] rounded-md border-[3px]  border-black outline-none no-underline'
                             />
@@ -194,6 +219,7 @@ export default function Play() {
                                 <span className='text-2xl'>PASSCODE</span>
                             </p>
                             <input 
+                                ref={refPass}
                                 onChange={(e)=>setCredentials((prev)=>({...prev,passcode:e.target.value}))} 
                                 type='text' 
                                 className='text-white p-2 text-xl font-bold hover:bg-[#eec39a] bg-[#d9a066] w-full h-[50px] rounded-md border-[3px]  border-black outline-none no-underline'

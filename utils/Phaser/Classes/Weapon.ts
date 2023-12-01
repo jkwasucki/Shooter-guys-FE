@@ -65,6 +65,7 @@ export default class Weapon extends Phaser.Physics.Arcade.Sprite{
         if(this.socket!.id === this.playerId){
             this.angle = Phaser.Math.Angle.Between(window.innerWidth / 2, window.innerHeight / 2, scene.input.x, scene.input.y);
         }
+        
         this.container.setRotation(this.angle);
         this.container.setPosition(x, y);
 
@@ -76,19 +77,13 @@ export default class Weapon extends Phaser.Physics.Arcade.Sprite{
             this.facing = 'left';
             this.weapon.setFlipY(true);
         }
-       
     }
     updateDepth(player:Player){
         if (this.angle < -0.36 && this.angle > -2.69) {
-           
-          
             this.container.setDepth(player.depth - 1);
-        
-    } else {
-      
+        } else {
             this.container.setDepth(player!.depth + 1);
-      
-    }
+        }
     }
     fire(scene: Phaser.Scene) {
          const bullet = this.bullets.create(this.container.x, this.container.y, 'bullet');
