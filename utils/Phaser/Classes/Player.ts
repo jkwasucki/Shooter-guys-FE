@@ -142,7 +142,6 @@ export default class Player extends Phaser.GameObjects.Sprite {
                             this.firelock = true
                             this.weapon.muzzle.setAlpha(1,1,1,1)
                             
-                            scene.cameras.main.shake(200, 0.003);
                             
                             this.weapon.fire(scene)
                             setTimeout(()=>{
